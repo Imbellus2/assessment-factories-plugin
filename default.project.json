@@ -1,5 +1,5 @@
 {
-    "name": "factories-plugin",
+    "name": "assessment-factories-plugin",
     "tree": {
         "$className": "DataModel",
         "HttpService": {
