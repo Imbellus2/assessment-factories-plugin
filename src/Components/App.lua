@@ -1,6 +1,7 @@
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Selection = game:GetService("Selection")
+local ServerStorage = game:GetService("ServerStorage")
 local StudioService = game:GetService("StudioService")
 
 local Root = script.Parent.Parent
@@ -39,7 +40,7 @@ local Studio = require(script.Parent.Parent.Studio)
 local App = React.Component:extend("PluginGui")
 
 local add = require(script.Parent.Parent.Helpers.add)
-local Manifest = require(script.Parent.Parent.Manifest)
+-- local Manifest = require(script.Parent.Parent.Manifest)
 local FactoryFloor = require(script.Parent.FactoryFloor)
 
 local Types = require(script.Parent.Parent.Types)
@@ -49,6 +50,8 @@ local GetMapData = require(script.Parent.Parent.GetMapData)
 
 local pluginVersion = require(script.Parent.Parent.Version)
 local TextItem = require(script.Parent.SubComponents.TextItem)
+local EditPowerupsUI = require(script.Parent.EditPowerupsUI)
+local ImageManifest = require(script.Parent.Parent.ImageManifest)
 
 function App:setPanel()
     Studio.setSelectionTool()
@@ -242,7 +245,6 @@ function App:render()
                         CurrentMapIndex = self.state.currentMapIndex,
                         Dataset = self.state.dataset,
                         Error = self.state.datasetError,
-
                         Title = self.state.currentPanel,
 
                         SetCurrentMap = function(mapIndex)
@@ -251,6 +253,10 @@ function App:render()
 
                         ShowEditFactoryUI = function()
                             self:changePanel(Panels.EditFactoryUI)
+                        end,
+
+                        ShowEditPowerupsUI = function()
+                            self:changePanel(Panels.EditPowerupsUI)
                         end,
 
                         ExportDataset = function()
@@ -304,6 +310,27 @@ function App:render()
                             tempMapDataInstance:Destroy()
                         end,
 
+                        ImportManifest = function()
+                            --Destroy existing manifest
+                            local existingManifest = ServerStorage:FindFirstChild("Factories Plugin Manifest")
+                            if existingManifest then
+                                existingManifest:Destroy()
+                            end
+
+                            --Import the Manifest.lua file from the Factories project
+                            local file = StudioService:PromptImportFile()
+                            if not file then
+                                return nil
+                            end
+
+                            local newManifestInstance = Instance.new("ModuleScript")
+                            newManifestInstance.Source = file:GetBinaryContents()
+                            newManifestInstance.Name = "Factories Plugin Manifest"
+                            newManifestInstance.Parent = ServerStorage
+
+                            self:updateDataset(self.state.dataset)
+                        end,
+
                         UpdateDataset = function(dataset)
                             self:updateDataset(dataset)
                         end,
@@ -327,6 +354,17 @@ function App:render()
                             self:updateDataset(dataset)
                         end,
                     }, {}),
+
+                EditPowerupsUI = self.state.currentPanel == Panels.EditPowerupsUI
+                    and EditPowerupsUI({
+                        Powerups = self.state.dataset.maps[self.state.currentMapIndex].powerups,
+                        OnClosePanel = function()
+                            self:showPreviousPanel()
+                        end,
+                        UpdateDataset = function()
+                            self:updateDataset(self.state.dataset)
+                        end,
+                    }),
 
                 EditMachineUI = self.state.currentPanel == Panels.EditMachineUI
                     and React.createElement(EditMachineUI, {
@@ -505,12 +543,12 @@ function App:render()
 
                 EditPowerupUI = nil,
 
-                MachineBillboardGUIs = self.state.datasetIsLoaded
-                    and MachineAnchorBillboardGuis({
-                        Items = self.state.dataset["maps"][self.state.currentMapIndex]["items"],
-                        HighlightedAnchor = self.state.highlightedMachineAnchor,
-                        HighlightedRequirementItem = self.state.requirementItemHovered,
-                    }),
+                MachineBillboardGUIs = self.state.datasetIsLoaded and MachineAnchorBillboardGuis({
+                    ImageManifest = ImageManifest.getManifest(),
+                    Items = self.state.dataset["maps"][self.state.currentMapIndex]["items"],
+                    HighlightedAnchor = self.state.highlightedMachineAnchor,
+                    HighlightedRequirementItem = self.state.requirementItemHovered,
+                }),
 
                 ConfirmationModal = self.state.showModal
                     and (self.state.selectedMachine or self.state.selectedItem)

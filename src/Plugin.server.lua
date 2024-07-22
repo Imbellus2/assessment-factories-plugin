@@ -1,4 +1,6 @@
-if game:GetService("RunService"):IsRunMode() then return end
+if game:GetService("RunService"):IsRunMode() then
+    return
+end
 
 local CoreGui = game:GetService("CoreGui")
 local Selection = game:GetService("Selection")
@@ -24,9 +26,10 @@ local function cleanup()
 end
 
 local function initPlugin()
+    print("Factories plugin clicked")
     if not pluginIsInitialized then
         plugin:Activate(false)
-        
+
         guiFolder = CoreGui:FindFirstChild("FactoriesPluginScreenGui")
         if not guiFolder then
             guiFolder = Instance.new("Folder")
@@ -34,10 +37,10 @@ local function initPlugin()
             guiFolder.Parent = CoreGui
         end
         Maid:GiveTask(guiFolder)
-        
+
         root = ReactRoblox.createRoot(guiFolder)
         root:render(React.createElement(App, {}))
-        
+
         plugin:SelectRibbonTool(Enum.RibbonTool.Select, UDim2.new())
 
         pluginIsInitialized = true
@@ -45,7 +48,7 @@ local function initPlugin()
     else
         cleanup()
         plugin:Deactivate()
-        
+
         pluginIsInitialized = false
         print("Factories Plugin deactivated.")
     end
@@ -57,7 +60,7 @@ local button = toolbar:CreateButton("Factories", "Start", "rbxassetid://44589018
 button.ClickableWhenViewportHidden = true
 button.Click:Connect(initPlugin)
 
-plugin.Unloading:Connect(function() 
+plugin.Unloading:Connect(function()
     cleanup()
     print("Unloading Plugin")
 end)

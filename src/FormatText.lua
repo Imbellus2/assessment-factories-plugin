@@ -10,9 +10,10 @@ end
 
 FormatText.numbersOnly = function(value)
     if tonumber(value) then
-        return value
+        return tonumber(value)
     else
-        return value:gsub("%D+", "")
+        value = value:gsub("%D+", "")
+        return tonumber(value)
     end
 end
 

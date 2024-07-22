@@ -79,6 +79,14 @@ local function EditDatasetUI(props: Props)
             TextXAlignment = Enum.TextXAlignment.Center,
         })
 
+        children["EditPowerups"] = Button({
+            Label = "Edit Powerups",
+            LayoutOrder = layoutOrder:Increment(),
+            OnActivated = props.ShowEditPowerupsUI,
+            Size = buttonSize,
+            TextXAlignment = Enum.TextXAlignment.Center,
+        })
+
         if props.Error == Constants.Errors.None then
             children["ExportDatasetButton"] = Button({
                 -- Active = false,
@@ -119,6 +127,14 @@ local function EditDatasetUI(props: Props)
             Label = "Import Dataset",
             LayoutOrder = layoutOrder:Increment(),
             OnActivated = props.ImportDataset,
+            Size = buttonSize,
+            TextXAlignment = Enum.TextXAlignment.Center,
+        })
+
+        children["ImportManifestButton"] = Button({
+            Label = "Import Image Manifest",
+            LayoutOrder = layoutOrder:Increment(),
+            OnActivated = props.ImportManifest,
             Size = buttonSize,
             TextXAlignment = Enum.TextXAlignment.Center,
         })

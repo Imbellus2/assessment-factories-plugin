@@ -19,21 +19,19 @@ local Icon = FishBloxComponents.Icon
 local Scene = require(script.Parent.Parent.Parent.Scene)
 local SmallLabel = require(script.Parent.SmallLabel)
 local SmallButton = require(script.Parent.SmallButton)
-
-local Manifest = require(script.Parent.Parent.Parent.Manifest)
-
+local ImageManifest = require(script.Parent.Parent.Parent.ImageManifest)
 
 type Props = {
-    HideIcon:boolean,
-    Image:string,
-    Index:number,
-    Label:string,
-    LayoutOrder:number,
-    ObjectToEdit:table,
-    OnDeleteButtonClicked:any,
-    OnEditButtonClicked:any,
-    OnSwapButtonClicked:any,
-    ShowSwapButton:boolean,
+    HideIcon: boolean,
+    Image: string,
+    Index: number,
+    Label: string,
+    LayoutOrder: number,
+    ObjectToEdit: table,
+    OnDeleteButtonClicked: any,
+    OnEditButtonClicked: any,
+    OnSwapButtonClicked: any,
+    ShowSwapButton: boolean,
 }
 
 function ListItemButton(props)
@@ -44,16 +42,16 @@ function ListItemButton(props)
     local canSwap = props.CanSwap == nil or props.CanSwap
 
     return React.createElement("Frame", {
-        BackgroundTransparency = .95,
+        BackgroundTransparency = 0.95,
         LayoutOrder = props.LayoutOrder or 1,
         Size = UDim2.new(1, 0, 0, 45),
-        [React.Event.MouseEnter] = function() 
+        [React.Event.MouseEnter] = function()
             setHover(true)
             if props.OnHover and props.ObjectToEdit["machineAnchor"] then
                 props.OnHover(props.ObjectToEdit)
             end
         end,
-        [React.Event.MouseLeave] = function() 
+        [React.Event.MouseLeave] = function()
             setHover(false)
             if props.OnHover and props.ObjectToEdit["machineAnchor"] then
                 props.OnHover(nil)
@@ -76,51 +74,50 @@ function ListItemButton(props)
         Row1 = Row({
             Gaps = 8,
             HorizontalAlignment = Enum.HorizontalAlignment.Left,
-            Size = UDim2.fromScale(1,1),
+            Size = UDim2.fromScale(1, 1),
         }, {
             Index = props.Index and Text({
                 AutomaticSize = Enum.AutomaticSize.X,
-                Color = Color3.new(1,1,1),
+                Color = Color3.new(1, 1, 1),
                 LayoutOrder = 0,
-                
                 TextXAlignment = Enum.TextXAlignment.Left,
                 TextYAlignment = Enum.TextYAlignment.Center,
-                Text = props.Index
+                Text = props.Index,
             }),
             Image = showImage and React.createElement("ImageLabel", {
                 BackgroundTransparency = 1,
-                Image = Manifest.images[props.Image] or "rbxassetid://7553285523", --Question mark icon
+                Image = ImageManifest.getImage(props.Image), --Question mark icon
                 LayoutOrder = 2,
-                Size = UDim2.fromOffset(40,40),
+                Size = UDim2.fromOffset(40, 40),
             }),
             Text1 = Text({
                 AutomaticSize = Enum.AutomaticSize.X,
-                Color = Color3.new(1,1,1),
+                Color = Color3.new(1, 1, 1),
                 LayoutOrder = 3,
-                Size = UDim2.fromScale(1,1),
+                Size = UDim2.fromScale(1, 1),
                 TextXAlignment = Enum.TextXAlignment.Left,
                 TextYAlignment = Enum.TextYAlignment.Center,
-                Text = props.Label or "NONE"
+                Text = props.Label or "NONE",
             }),
         }),
         Row = Row({
             Gaps = 8,
             HorizontalAlignment = Enum.HorizontalAlignment.Right,
-            Size = UDim2.fromScale(1, 1)
+            Size = UDim2.fromScale(1, 1),
         }, {
             SwapButton = hover and canSwap and SmallButton({
                 Label = "Swap",
                 LayoutOrder = 9,
                 OnActivated = function()
                     props.OnSwapButtonClicked(props.ObjectToEdit["id"])
-                end
+                end,
             }),
             EditButton = hover and canEdit and SmallButton({
                 Label = "Edit",
                 LayoutOrder = 10,
                 OnActivated = function()
                     props.OnEditButtonClicked(props.ObjectToEdit["id"])
-                end
+                end,
             }),
             DeleteButton = hover and canDelete and SmallButton({
                 AutomaticSize = Enum.AutomaticSize.None,
@@ -129,9 +126,9 @@ function ListItemButton(props)
                 OnActivated = function()
                     props.OnDeleteButtonClicked(props.ObjectToEdit["id"])
                 end,
-                Size = UDim2.new(0, 20, 0, 30)
-            })
-        })
+                Size = UDim2.new(0, 20, 0, 30),
+            }),
+        }),
     })
 end
 

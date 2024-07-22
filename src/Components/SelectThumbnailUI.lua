@@ -1,5 +1,3 @@
-local HttpService = game:GetService("HttpService")
-local StudioService = game:GetService("StudioService")
 local Packages = script.Parent.Parent.Packages
 local React = require(Packages.React)
 local FishBlox = require(Packages.FishBlox)
@@ -7,24 +5,11 @@ local FishBloxComponents = FishBlox.Components
 local Dash = require(Packages.Dash)
 local Block = FishBloxComponents.Block
 local Row = FishBloxComponents.Row
-local Button = FishBloxComponents.Button
 local Column = FishBloxComponents.Column
-local Gap = FishBloxComponents.Gap
-local Panel = FishBloxComponents.Panel
 local Text = FishBloxComponents.Text
-local TextInput = FishBloxComponents.TextInput
-
-local TextInputModal = require(script.Parent.Modals.TextInputModal)
-local SmallButtonWithLabel = require(script.Parent.SubComponents.SmallButtonWithLabel)
-local SmallLabel = require(script.Parent.SubComponents.SmallLabel)
 local SidePanel = require(script.Parent.SubComponents.SidePanel)
-local ListItemButton = require(script.Parent.SubComponents.ListItemButton)
-
-local Dataset = require(script.Parent.Parent.Dataset)
-local Scene = require(script.Parent.Parent.Scene)
-local Studio = require(script.Parent.Parent.Studio)
-local Manifest = require(script.Parent.Parent.Manifest)
 local Incrementer = require(script.Parent.Parent.Incrementer)
+local ImageManifest = require(script.Parent.Parent.ImageManifest)
 
 --use this to create a consistent layout order that plays nice with Roact
 local index = 0
@@ -67,7 +52,7 @@ local function ImageButton(imageKey, onClick)
         }, {
             Image = React.createElement("ImageLabel", {
                 BackgroundTransparency = 1,
-                Image = Manifest.images[imageKey],
+                Image = ImageManifest.getImage(imageKey),
                 LayoutOrder = 1,
                 Size = UDim2.fromScale(0.9, 0.9),
                 SizeConstraint = Enum.SizeConstraint.RelativeXX,
@@ -110,25 +95,28 @@ local function SelectThumbnailUI(props: Props)
 
     local imageButtons = {}
     local thumbnails = {}
-    for imageKey, _ in Manifest.images do
-        if imageKey:split("-")[1] == "icon" then
-            table.insert(thumbnails, imageKey)
+    local manifest = ImageManifest.getManifest()
+    if manifest then
+        for imageKey, _ in manifest.images do
+            if imageKey:split("-")[1] == "icon" then
+                table.insert(thumbnails, imageKey)
+            end
         end
-    end
-    table.sort(thumbnails, function(a, b) --Do this to make sure buttons show in alphabetical order
-        return a:lower() < b:lower()
-    end)
+        table.sort(thumbnails, function(a, b) --Do this to make sure buttons show in alphabetical order
+            return a:lower() < b:lower()
+        end)
 
-    local count = 0
-    local imagesToShow = {}
-    for _, imageKey in thumbnails do
-        count = count + 1
-        if count % 3 == 0 then
-            table.insert(imagesToShow, imageKey)
-            table.insert(imageButtons, ImageButtonRow(imagesToShow, props.OnClick))
-            table.clear(imagesToShow)
-        else
-            table.insert(imagesToShow, imageKey)
+        local count = 0
+        local imagesToShow = {}
+        for _, imageKey in thumbnails do
+            count = count + 1
+            if count % 3 == 0 then
+                table.insert(imagesToShow, imageKey)
+                table.insert(imageButtons, ImageButtonRow(imagesToShow, props.OnClick))
+                table.clear(imagesToShow)
+            else
+                table.insert(imagesToShow, imageKey)
+            end
         end
     end
 

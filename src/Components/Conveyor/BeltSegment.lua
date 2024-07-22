@@ -6,7 +6,7 @@ local PathGenerator = require(script.Parent.Parent.Parent.PathGenerator)
 local getOrCreateFolder = require(script.Parent.Parent.Parent.Helpers.getOrCreateFolder)
 local Scene = require(script.Parent.Parent.Parent.Scene)
 local thickness = 0.5
-local width = 1.5
+local width = 1.1
 local desiredRadius = 4
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 function BeltSegment(props: Props)
     local beltPart, setBeltPart = React.useState(nil)
     local children = {}
-    local beltsFolder = Scene.getBeltsFolder()
+    local beltsFolder = Scene.getBeltPartsFolder()
     local conveyorFolder: Folder = Scene.getConveyorFolder(props.Name)
 
     React.useEffect(function()

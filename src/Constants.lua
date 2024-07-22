@@ -4,7 +4,7 @@ return {
         EditFactoryUI = "Edit Factory",
         EditMachineUI = "Edit Machine",
         EditItemUI = "Edit Item",
-        EditPowerupUI = "Edit Powerup",
+        EditPowerupsUI = "Edit Powerups",
         SelectThumbnailUI = "Select Thumbnail",
         SelectMachineUI = "Select Machine",
         SelectOutputItemUI = "Select Item",
@@ -15,6 +15,12 @@ return {
         makerSeller = "makerSeller",
         purchaser = "purchaser",
         invalid = "invalid",
+    },
+    MachineAnchorSizes = {
+        maker = Vector3.new(5.33, 2.033, 10.463),
+        makerSeller = Vector3.new(5.33, 2.033, 6.061),
+        purchaser = Vector3.new(8.836, 8.713, 8.836),
+        invalid = Vector3.new(1, 1, 1),
     },
     MachineAssetPaths = {
         maker = "Assets.Machines.Machine-Default",
@@ -36,6 +42,8 @@ return {
         },
         MachineDefaultMaxStorage = 100,
         MachineDefaultYPosition = 1.05,
+        MachineDefaultProductionDelay = 0,
     },
     None = "None",
+    NoImage = "rbxassetid://7553285523",
 }

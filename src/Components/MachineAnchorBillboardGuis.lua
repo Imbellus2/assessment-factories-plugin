@@ -25,10 +25,11 @@ local Scene = require(script.Parent.Parent.Scene)
 local Studio = require(script.Parent.Parent.Studio)
 
 local add = require(script.Parent.Parent.Helpers.add)
-local Manifest = require(script.Parent.Parent.Manifest)
 local Types = require(script.Parent.Parent.Types)
+local ImageManifest = require(script.Parent.Parent.ImageManifest)
 
 type Props = {
+    ImageManifest: table,
     Items: table,
     HighlightedAnchor: Model,
     HighlightedRequirementItem: string,
@@ -56,7 +57,10 @@ local function MachineAnchorBillboardGuis(props: Props)
                         React.createElement("ImageLabel", {
                             Size = imageSize,
                             BackgroundTransparency = 1,
-                            Image = Manifest.images[image] or "rbxassetid://7553285523",
+                            -- Image = Manifest.images[image] or "rbxassetid://7553285523",
+                            -- Image = props.ImageManifest.images[image],
+                            Image = ImageManifest.getImage(image),
+                            -- Image = manifest.images[image],
                         })
                     )
                 end

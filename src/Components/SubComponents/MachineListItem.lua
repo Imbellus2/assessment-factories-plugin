@@ -7,6 +7,8 @@ local Roact = require(Packages.Roact)
 local FishBlox = require(Packages.FishBlox)
 local Types = require(script.Parent.Parent.Parent.Types)
 local ReactRoblox = require(script.Parent.Parent.Parent.Packages.ReactRoblox)
+local MachineThumbnails = require(script.Parent.Parent.Parent.MachineThumbnails)
+local Constants = require(script.Parent.Parent.Parent.Constants)
 local FishBloxComponents = FishBlox.Components
 
 -- local SmallLabel = require(script.Parent.SmallLabel)
@@ -156,7 +158,7 @@ function MachineListItem(props: Props)
             }),
 
             -- imageLabel = React.createElement("ImageLabel", {
-            --     Image = "rbxassetid://10057564594",
+            --     Image = MachineThumbnails[props.Machine.asset] or Constants.NoImage,
             --     AnchorPoint = Vector2.new(0, 0.5),
             --     BackgroundColor3 = Color3.fromRGB(255, 255, 255),
             --     BackgroundTransparency = 1,

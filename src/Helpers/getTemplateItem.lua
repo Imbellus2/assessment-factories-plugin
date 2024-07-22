@@ -5,11 +5,14 @@ return function()
         requirements = {
             {
                 count = 1,
-                itemId = "currency"
-            }
+                itemId = "currency",
+            },
         },
         asset = "",
-        locName = "Template Item"
+        locName = {
+            singular = "Template Item",
+            plural = "Template Items",
+        },
     }
     return template
 end

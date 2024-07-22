@@ -26,10 +26,13 @@ function Dataset:cleanMachines()
         if machineType == Constants.MachineTypes.purchaser then
             machine.sources = nil
             machine["asset"] = Constants.MachineAssetPaths.purchaser
+            machine.supportsPowerup = false
         elseif machineType == Constants.MachineTypes.maker then
             machine["asset"] = Constants.MachineAssetPaths.maker
+            machine.supportsPowerup = true
         elseif machineType == Constants.MachineTypes.makerSeller then
             machine["asset"] = Constants.MachineAssetPaths.makerSeller
+            machine.supportsPowerup = false
         end
     end
 
@@ -53,6 +56,9 @@ function Dataset:cleanMachines()
                 --Make an error, here
                 -- warn("ERROR!", machine.id, "is a maker, but no other machine uses it as a source.")
             end
+        elseif machineType == Constants.MachineTypes.purchaser or machineType == Constants.MachineTypes.makerSeller then
+            --Make sure there is no delay for non-maker machines.
+            machine.defaultProductionDelay = Constants.Defaults.MachineDefaultProductionDelay
         end
     end
 end
@@ -61,9 +67,16 @@ function Dataset:cleanItems()
     local items = self.items
     for key, item in pairs(items) do
         --Check the items based on machine type. There are certain requirements for certain machines.
-        --PUrchasers: Each item should have a cost, and no requirements.
+        --Purchasers: Each item should have a cost, and no requirements.
         --Makers: Each item should have requirements, and no cost (Requirement of Currency) and no value (Sale Price)
         --MakerSellers: Each item should have requirements, and a value (Sale Price), but no cost (Requirement of Currency)
+        if item.value then
+            if typeof(item.value.count) == "string" then
+                item.value.count = tonumber(item.value.count)
+                print("Converted string to number for", item.id, "item value.count")
+            end
+        end
+
         local machineType = self:getMachineTypeFromItemId(item.id)
         if machineType == Constants.MachineTypes.purchaser then
             --Prune the requirements array of anything that is not "currency"
@@ -149,6 +162,16 @@ function Dataset:cleanItems()
                 item.requirements = {}
                 item.requirements[1] = { itemId = "currency", count = 0 }
             end
+        end
+
+        --Check the loc name. Each locName should have a singular and a plural.
+        if typeof(item.locName) == "string" then
+            print("Renaming locName to singular and plural...", item.locName)
+            local unitLocName = {
+                singular = item.locName,
+                plural = item.locName .. "s",
+            }
+            item.locName = unitLocName
         end
     end
 end

@@ -1,7 +1,7 @@
 local Scene = require(script.Parent.Scene)
 return function()
     --Parse the map nodes from BeltData.
-    local beltData = Scene.getBeltDataFolder()
+    local beltData = Scene.getBeltMapDataFolder()
     local mapDataForExport = {}
     for _, conveyorFolder: Folder in beltData:GetChildren() do
         local nodeData = {}

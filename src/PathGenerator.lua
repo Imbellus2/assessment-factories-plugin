@@ -218,7 +218,8 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
 
     local primaryPart = table.remove(components, 1)
     primaryPart.Parent = folder
-    local path = primaryPart:UnionAsync(components)
+    local path: UnionOperation = primaryPart:UnionAsync(components)
+    path.UsePartColor = true
 
     return path
 end

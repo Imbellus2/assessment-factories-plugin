@@ -7,7 +7,7 @@ local Roact = require(Packages.Roact)
 local FishBlox = require(Packages.FishBlox)
 local Types = require(script.Parent.Parent.Parent.Types)
 local ReactRoblox = require(script.Parent.Parent.Parent.Packages.ReactRoblox)
-local Manifest = require(script.Parent.Parent.Parent.Manifest)
+local ImageManifest = require(script.Parent.Parent.Parent.ImageManifest)
 local FishBloxComponents = FishBlox.Components
 
 type Props = {
@@ -43,7 +43,7 @@ local function InlineThumbnailSelect(props: Props)
             }),
 
             imageLabel = React.createElement("ImageButton", {
-                Image = Manifest.images[props.Thumbnail],
+                Image = ImageManifest.getImage(props.Thumbnail),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                 BackgroundTransparency = 1,

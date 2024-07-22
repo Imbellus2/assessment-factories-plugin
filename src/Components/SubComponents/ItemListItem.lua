@@ -8,13 +8,14 @@ local FishBlox = require(Packages.FishBlox)
 local FishBloxComponents = FishBlox.Components
 local Types = require(script.Parent.Parent.Parent.Types)
 local ReactRoblox = require(script.Parent.Parent.Parent.Packages.ReactRoblox)
-local Manifest = require(script.Parent.Parent.Parent.Manifest)
 local TextItem = require(script.Parent.TextItem)
 local Dataset = require(script.Parent.Parent.Parent.Dataset)
 local Scene = require(script.Parent.Parent.Parent.Scene)
 local InlineNumberInput = require(script.Parent.InlineNumberInput)
 local Incrementer = require(script.Parent.Parent.Parent.Incrementer)
 local FormatText = require(script.Parent.Parent.Parent.FormatText)
+local SmallLabel = require(script.Parent.SmallLabel)
+local ImageManifest = require(script.Parent.Parent.Parent.ImageManifest)
 local FishBloxComponents = FishBlox.Components
 
 type Props = {
@@ -45,7 +46,7 @@ type Props = {
 function Requirement(requirement: table, layoutOrder: number, requirementCallback: () -> nil, hoverCallback: () -> nil)
     local itemId = requirement.itemId
     local item = Dataset:getItemFromId(itemId)
-    local locName = item.locName
+    local itemLocName = item.locName.singular
     local thumb = item.thumb
     local count = requirement.count
     return React.createElement("Frame", {
@@ -93,7 +94,7 @@ function Requirement(requirement: table, layoutOrder: number, requirementCallbac
             }),
 
             imageLabel = React.createElement("ImageLabel", {
-                Image = Manifest.images[thumb],
+                Image = ImageManifest.getImage(thumb),
                 AnchorPoint = Vector2.new(0, 0.5),
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255),
                 BackgroundTransparency = 1,
@@ -108,7 +109,7 @@ function Requirement(requirement: table, layoutOrder: number, requirementCallbac
 
             label = React.createElement("TextLabel", {
                 FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
-                Text = locName,
+                Text = itemLocName,
                 TextColor3 = Color3.fromRGB(255, 255, 255),
                 TextSize = 12,
                 TextTruncate = Enum.TextTruncate.None,
@@ -185,10 +186,20 @@ function ItemListItem(props: Props)
 
     local requirements = {}
     if showRequirements then
+        table.insert(
+            requirements,
+            SmallLabel({
+                Bold = false,
+                Label = "Needs:",
+                LayoutOrder = layoutOrder:Increment() + 10,
+                FontSize = 18,
+            })
+        )
         for _, requirement in props.Requirements do
             table.insert(
                 requirements,
                 Requirement(requirement, layoutOrder:Increment() + 10, function(value)
+                    value = FormatText.numbersOnly(value)
                     props.OnRequirementCountChanged(value, requirement)
                 end, function(value)
                     props.OnRequirementItemHovered(value)
@@ -360,7 +371,7 @@ function ItemListItem(props: Props)
                 }, {
 
                     imageLabel = React.createElement("ImageLabel", {
-                        Image = Manifest.images[props.Thumbnail],
+                        Image = ImageManifest.getImage(props.Thumbnail),
                         ImageTransparency = props.Unavailable and 0.6 or 0,
                         AnchorPoint = Vector2.new(0, 0.5),
                         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
@@ -403,7 +414,7 @@ function ItemListItem(props: Props)
                 Label = "Count",
                 Value = requirementCount,
                 OnChanged = function(value)
-                    value = tonumber(value)
+                    value = FormatText.numbersOnly(value)
 
                     setRequirementCount(value)
                     props.OnRequirementCountChanged(value)
@@ -426,6 +437,7 @@ function ItemListItem(props: Props)
 
                     OnReset = nil,
                     OnChanged = function(value)
+                        value = FormatText.numbersOnly(value)
                         props.OnSalePriceChanged(value)
                     end,
                 }),
@@ -442,6 +454,7 @@ function ItemListItem(props: Props)
                     Value = itemCost,
                     OnReset = nil,
                     OnChanged = function(value)
+                        value = FormatText.numbersOnly(value)
                         props.OnCostChanged(value)
                     end,
                 }),

@@ -20,7 +20,7 @@ local Scene = require(script.Parent.Parent.Scene)
 local Studio = require(script.Parent.Parent.Studio)
 
 local add = require(script.Parent.Parent.Helpers.add)
-local Manifest = require(script.Parent.Parent.Manifest)
+-- local Manifest = require(script.Parent.Parent.Manifest)
 local Dataset = require(script.Parent.Parent.Dataset)
 local LabelWithAdd = require(script.Parent.SubComponents.LabelWithAdd)
 local Separator = require(script.Parent.SubComponents.Separator)
@@ -60,11 +60,12 @@ local MachineTypes = {
 local function EditMachineUI(props: Props)
     local layoutOrder = Incrementer.new()
 
-    local id, setMachineId = React.useState("")
+    local id, setMachineId = React.useState("") :: string
     local currentOutputCount, setCurrentOutputCount = React.useState(props.Machine.currentOutputCount)
     local machineTypeIndex, setMachineTypeIndex = React.useState(MachineTypes[props.Machine["type"]])
 
     local machine = props.Machine
+    local machineType: string = props.Machine["type"]
 
     React.useEffect(function()
         setMachineTypeIndex(MachineTypes[props.Machine["type"]])
@@ -112,16 +113,18 @@ local function EditMachineUI(props: Props)
             local item: Types.Item = props.Dataset.maps[props.CurrentMapIndex].items[outputItem]
             local validRequirements = Dataset:getValidRequirementsForItem(item)
 
-            local machineType = Dataset:getMachineTypeFromItemId(item.id)
-            local showCost = (machineType == Constants.None) or (machineType == Constants.MachineTypes.purchaser)
-            local showSalePrice = (machineType == Constants.None) or (machineType == Constants.MachineTypes.makerSeller)
-            local hideRequirements = machineType == Constants.MachineTypes.purchaser
+            local itemMachineType = Dataset:getMachineTypeFromItemId(item.id)
+            local showCost = (itemMachineType == Constants.None)
+                or (itemMachineType == Constants.MachineTypes.purchaser)
+            local showSalePrice = (itemMachineType == Constants.None)
+                or (itemMachineType == Constants.MachineTypes.makerSeller)
+            local hideRequirements = itemMachineType == Constants.MachineTypes.purchaser
 
             table.insert(
                 outputItems,
                 ItemListItem({
                     Item = item,
-                    Label = item.locName,
+                    Label = item.locName.singular,
                     LayoutOrder = i,
                     Requirements = validRequirements,
                     Thumbnail = item.thumb,
@@ -453,14 +456,26 @@ local function EditMachineUI(props: Props)
                 props.UpdateDataset()
             end,
             OnChanged = function(value)
-                if not tonumber(value) then
-                    return
-                end
-                value = tonumber(value)
+                value = FormatText.numbersOnly(value)
                 if value < 1 then
                     value = 1
                 end
                 Dataset:updateMachineProperty(props.Machine, "defaultMaxStorage", value)
+                props.UpdateDataset()
+            end,
+        }),
+
+        DefaultProductionDelay = machineType == Constants.MachineTypes.maker and InlineNumberInput({
+            LayoutOrder = layoutOrder:Increment(),
+            Value = props.Machine.defaultProductionDelay,
+            Label = "Delay",
+            OnReset = function() end,
+            OnChanged = function(value)
+                value = FormatText.numbersOnly(value)
+                if value < 0 then
+                    value = 0
+                end
+                Dataset:updateMachineProperty(props.Machine, "defaultProductionDelay", value)
                 props.UpdateDataset()
             end,
         }),

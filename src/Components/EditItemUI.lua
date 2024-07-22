@@ -24,7 +24,7 @@ local SmallButton = require(script.Parent.SubComponents.SmallButton)
 local ListItemButton = require(script.Parent.SubComponents.ListItemButton)
 
 local Dataset = require(script.Parent.Parent.Dataset)
-local Manifest = require(script.Parent.Parent.Manifest)
+-- local Manifest = require(script.Parent.Parent.Manifest)
 local Scene = require(script.Parent.Parent.Scene)
 local Studio = require(script.Parent.Parent.Studio)
 
@@ -112,14 +112,13 @@ local function EditItemUI(props: Props)
                     HideArrows = true,
                     HideEditButton = true,
                     Item = requirementItem,
-                    Label = requirementItem.locName,
+                    Label = requirementItem.locName.singular,
                     LayoutOrder = layoutOrder:Increment() + 100,
                     Thumbnail = requirementItem.thumb,
                     RequirementCount = requirement.count,
                     OnRequirementCountChanged = function(value)
                         for _, changedRequirement in ipairs(item.requirements) do
                             if changedRequirement.itemId == requirement.itemId then
-                                print("Changing requirement count", requirement.itemId, value)
                                 requirement.count = value
                             end
                         end
@@ -155,13 +154,16 @@ local function EditItemUI(props: Props)
                 print(Dash.pretty(item, { multiline = true, indent = "\t", depth = 10 }))
             end,
         }),
-
-        LocName = FishBloxComponents.TextInput({
+        LocNameSingularLabel = TextItem({
+            Text = "LocName Singular:",
+            LayoutOrder = layoutOrder:Increment(),
+        }),
+        LocNameSingular = FishBloxComponents.TextInput({
             HideLabel = true,
             LayoutOrder = layoutOrder:Increment(),
             Placeholder = "Enter Localized Name",
             Size = UDim2.new(1, 0, 0, 50),
-            Value = item.locName,
+            Value = item.locName.singular,
 
             OnChanged = function(text)
                 local newText = text
@@ -173,11 +175,35 @@ local function EditItemUI(props: Props)
                 --Auto update ID based on LocName
                 local updated, newItem = Dataset:updateItemId(item, FormatText.convertToIdText(newText))
                 if updated then
-                    newItem.locName = newText
+                    newItem.locName.singular = newText
                     setItemId(newItem.id)
                     props.SetNewItemAsSelectedItem(newItem)
                     props.UpdateDataset()
                 end
+            end,
+        }),
+
+        LocNamePluralLabel = TextItem({
+            Text = "LocName Plural:",
+            LayoutOrder = layoutOrder:Increment(),
+        }),
+        LocNamePlural = FishBloxComponents.TextInput({
+            HideLabel = true,
+            LayoutOrder = layoutOrder:Increment(),
+            Placeholder = "Enter Localized Name",
+            Size = UDim2.new(1, 0, 0, 50),
+            Value = item.locName.plural,
+
+            OnChanged = function(text)
+                local newText = text
+                --prevent the id from being empty
+                if #text < 1 then
+                    return
+                end
+                --Check for invalid characters
+                --Auto update ID based on LocName
+                item.locName.plural = newText
+                props.UpdateDataset()
             end,
         }),
 

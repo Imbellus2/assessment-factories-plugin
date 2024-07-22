@@ -11,7 +11,7 @@ local SidePanel = require(script.Parent.SubComponents.SidePanel)
 local Dataset = require(script.Parent.Parent.Dataset)
 local Scene = require(script.Parent.Parent.Scene)
 local Studio = require(script.Parent.Parent.Studio)
-local Manifest = require(script.Parent.Parent.Manifest)
+-- local Manifest = require(script.Parent.Parent.Manifest)
 local Types = require(script.Parent.Parent.Types)
 local Incrementer = require(script.Parent.Parent.Incrementer)
 local LabeledAddButton = require(script.Parent.SubComponents.LabeledAddButton)
@@ -55,7 +55,7 @@ local function SelectItemUI(props: Props)
     --Sort all items by locName.
     local sortedItemKeys = Dash.keys(props.Items)
     table.sort(sortedItemKeys, function(a, b)
-        return props.Items[a].locName:lower() < props.Items[b].locName:lower()
+        return props.Items[a].locName.singular:lower() < props.Items[b].locName.singular:lower()
     end)
 
     local itemChoices = {}
@@ -90,7 +90,7 @@ local function SelectItemUI(props: Props)
                 HideEditButton = props.HideEditButtons,
                 HideDeleteButtons = props.HideDeleteButtons,
                 Item = item,
-                Label = item.locName,
+                Label = item.locName.singular,
                 LayoutOrder = layoutOrder:Increment(),
                 Thumbnail = item.thumb,
 
@@ -126,7 +126,7 @@ local function SelectItemUI(props: Props)
                     HideArrows = true,
 
                     Item = item,
-                    Label = item.locName,
+                    Label = item.locName.singular,
                     LayoutOrder = layoutOrder:Increment(),
                     Thumbnail = item.thumb,
                     Unavailable = true,
