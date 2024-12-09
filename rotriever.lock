@@ -91,7 +91,7 @@ dependencies = [
 [[package]]
 name = "FishBlox"
 version = "0.0.1"
-commit = "ead30c3a6d3ffde5fa6df883803a1fc69e9b3ef8"
+commit = "e33e4b57cd7b5ccf429095f46abbfc57a506d76b"
 source = "url+https://github.com/imbellus2/fishblox"
 dependencies = [
     "BentoBlox BentoBlox 0.0.1 url+https://github.com/imbellus2/bentoblox",
