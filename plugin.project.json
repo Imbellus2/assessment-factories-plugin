@@ -1,0 +1,10 @@
+{
+    "name": "factories-plugin",
+    "tree": {
+      "$className": "Folder",
+      "$path": "src/",
+      "Packages": {
+        "$path": "Packages/"
+      }
+    }
+  }
