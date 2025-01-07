@@ -95,12 +95,12 @@ local function MachineAnchorBillboardGuis(props: Props)
                             LayoutOrder = 1,
                             Text = machine.locName,
                         }),
-                        -- Text2 = Text({
-                        --     Color = machineIsInvalid and Color3.new(1, 0, 0) or Color3.new(1, 1, 1),
-                        --     FontSize = 16,
-                        --     LayoutOrder = 2,
-                        --     Text = "Makes: " .. outputsString,
-                        -- }),
+                        Text2 = Text({
+                            Color = machineIsInvalid and Color3.new(1, 0, 0) or Color3.new(1, 1, 1),
+                            FontSize = 16,
+                            LayoutOrder = 2,
+                            Text = "Makes: " .. outputsString,
+                        }),
                         Text3 = Text({
                             Color = duplicateCoordinatesExist and Color3.new(1, 0, 0) or Color3.new(1, 1, 1),
                             FontSize = 16,

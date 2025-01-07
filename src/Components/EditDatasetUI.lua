@@ -28,6 +28,7 @@ local SmallButton = require(script.Parent.SubComponents.SmallButton)
 local DatasetInstance = require(script.Parent.Parent.DatasetInstance)
 local TextItem = require(script.Parent.SubComponents.TextItem)
 local Incrementer = require(script.Parent.Parent.Incrementer)
+local Separator = require(script.Parent.SubComponents.Separator)
 type Props = {
     Dataset: table,
     CurrentMap: table,
@@ -63,12 +64,24 @@ local function EditDatasetUI(props: Props)
             end,
         })
 
+        children["Separator1"] = React.createElement("Frame", {
+            Size = UDim2.new(1, 0, 0, 25),
+            BackgroundTransparency = 1,
+            LayoutOrder = layoutOrder:Increment(),
+        })
+
         children["SceneName"] = TextInput({
             Label = "Scene Name",
             LayoutOrder = layoutOrder:Increment(),
             Size = UDim2.new(1, 0, 0, 50),
             Value = map["scene"],
             OnChanged = props.UpdateSceneName,
+        })
+
+        children["Separator2"] = React.createElement("Frame", {
+            Size = UDim2.new(1, 0, 0, 25),
+            BackgroundTransparency = 1,
+            LayoutOrder = layoutOrder:Increment(),
         })
 
         children["EditFactoryButton"] = Button({
