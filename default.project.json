@@ -10,9 +10,9 @@
         },
         "PluginDebugService": {
             "$className": "PluginDebugService",
-            "user_Factories Plugin.rbxmx": {
+            "user_factories-plugin.rbxmx": {
                 "$className": "Plugin",
-                "Factories Plugin": {
+                "factories-plugin": {
                     "$className": "Folder",
                     "$path": "src",
                     "Packages": {
