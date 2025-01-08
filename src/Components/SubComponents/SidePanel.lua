@@ -1,19 +1,11 @@
-local HttpService = game:GetService("HttpService")
-local StudioService = game:GetService("StudioService")
 local Packages = script.Parent.Parent.Parent.Packages
-local Dash = require(Packages.Dash)
 local React = require(Packages.React)
 local Roact = require(Packages.Roact)
 local FishBlox = require(Packages.FishBlox)
 local FishBloxComponents = FishBlox.Components
 local Block = FishBloxComponents.Block
 local Button = FishBloxComponents.Button
-local Row = FishBloxComponents.Row
 local Column = FishBloxComponents.Column
-local Gap = FishBloxComponents.Gap
-local Panel = FishBloxComponents.Panel
-local Text = FishBloxComponents.Text
-
 export type Props = {
     OnClosePanel: any,
     Title: string,
