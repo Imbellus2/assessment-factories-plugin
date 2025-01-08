@@ -22,10 +22,6 @@ export type Props = {
 
 return function(props, children)
     children = children or {}
-    local showClose = props.ShowClose
-    if props.ShowClose == nil then
-        showClose = true
-    end
 
     return Block({
         AutomaticSize = Enum.AutomaticSize.None,
