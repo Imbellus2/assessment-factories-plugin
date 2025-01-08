@@ -99,27 +99,4 @@ return function(props, children)
             }, children),
         }),
     })
-    -- return Panel({
-    --     AutomaticSize = Enum.AutomaticSize.Y,
-    --     OnClosePanel = props.OnClosePanel,
-    --     Title = props.Title,
-    --     ShowClose = showClose,
-    --     Size = UDim2.new(0, 300, 1, 0),
-    -- },{
-    --     ScrollingFrame = React.createElement("ScrollingFrame", {
-    --         AutomaticCanvasSize = Enum.AutomaticSize.Y,
-    --         -- CanvasSize = UDim2.new(0, 0, 1, 0),
-    --         Size = UDim2.fromScale(1, 1),
-    --         BackgroundTransparency = 1,
-    --         BorderSizePixel = 0,
-    --         ScrollingDirection = Enum.ScrollingDirection.Y,
-    --     },{
-    --         Content = Column({
-    --             AutomaticSize = Enum.AutomaticSize.Y,
-    --             Gaps = props.Gaps or 8,
-    --             PaddingHorizontal = 8,
-    --             PaddingTop = 5,
-    --         }, children)
-    --     })
-    -- })
 end

@@ -186,10 +186,52 @@ local function EditDatasetUI(props: Props)
         })
     end
 
+    local scrollingFrameChildren = {
+        uIPadding = React.createElement("UIPadding", {
+            PaddingBottom = UDim.new(0, layoutOrder:Increment() * 10),
+            PaddingLeft = UDim.new(0, 4),
+            PaddingRight = UDim.new(0, 6),
+            PaddingTop = UDim.new(0, 8),
+        }),
+
+        uIListLayout = React.createElement("UIListLayout", {
+            Padding = UDim.new(0, 12),
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+        }),
+    }
+
+    children = Dash.join(scrollingFrameChildren, children)
+
     return SidePanel({
         ShowClose = false,
         Title = props.Title,
-    }, children)
+    }, {
+        ScrollingList = React.createElement("ScrollingFrame", {
+            AutomaticCanvasSize = Enum.AutomaticSize.Y,
+            CanvasSize = UDim2.new(),
+            ScrollBarImageTransparency = 1,
+            ScrollBarThickness = 4,
+            ScrollingDirection = Enum.ScrollingDirection.Y,
+            VerticalScrollBarInset = Enum.ScrollBarInset.Always,
+            Active = true,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            BackgroundTransparency = 1,
+            BorderColor3 = Color3.fromRGB(0, 0, 0),
+            BorderSizePixel = 0,
+            Size = UDim2.fromScale(1, 1),
+            LayoutOrder = layoutOrder:Increment(),
+        }, {
+            frame = React.createElement("Frame", {
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                BackgroundTransparency = 1,
+                BorderColor3 = Color3.fromRGB(0, 0, 0),
+                BorderSizePixel = 0,
+                Size = UDim2.fromScale(1, 0),
+            }, children),
+        }),
+    })
 end
 
 return function(props)
