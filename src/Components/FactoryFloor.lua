@@ -117,7 +117,6 @@ local FactoryFloor = function(props: Props)
     local children = {}
     --Create machine and conveyor components
     local machineComponents = {}
-    -- local conveyorData = {}
     for _, machine in props.Machines do
         machineComponents[machine.id] = Machine({
             Id = machine.id,

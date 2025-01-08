@@ -10,7 +10,6 @@ local width = 1.1
 local desiredRadius = 4
 
 type Props = {
-    -- ConveyorFolder: Folder,
     Name: string,
     EndPoint: table,
     StartPoint: table,
@@ -60,9 +59,6 @@ function BeltSegment(props: Props)
             else
                 print("Error! Could not find Belt Data folder to destroy!")
             end
-            -- if part then
-            --     part:Destroy()
-            -- end
         end
     end, {})
 
