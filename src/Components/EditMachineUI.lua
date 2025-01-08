@@ -60,7 +60,6 @@ local MachineTypes = {
 local function EditMachineUI(props: Props)
     local layoutOrder = Incrementer.new()
 
-    local id, setMachineId = React.useState("") :: string
     local currentOutputCount, setCurrentOutputCount = React.useState(props.Machine.currentOutputCount)
     local machineTypeIndex, setMachineTypeIndex = React.useState(MachineTypes[props.Machine["type"]])
 
@@ -284,7 +283,6 @@ local function EditMachineUI(props: Props)
                 local updated = Dataset:updateMachineId(props.Machine, FormatText.convertToIdText(newText))
                 if updated then
                     props.Machine.locName = newText
-                    setMachineId(props.Machine.id)
                     props.UpdateDataset()
                 end
             end,
