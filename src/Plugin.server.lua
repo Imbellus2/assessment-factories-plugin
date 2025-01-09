@@ -39,7 +39,7 @@ local function initPlugin()
         Maid:GiveTask(guiFolder)
 
         root = ReactRoblox.createRoot(guiFolder)
-        root:render(React.createElement(App, {}))
+        root:render(React.createElement(App, { Plugin = plugin }))
 
         plugin:SelectRibbonTool(Enum.RibbonTool.Select, UDim2.new())
 

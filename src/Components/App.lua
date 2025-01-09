@@ -83,6 +83,21 @@ function App:showPreviousPanel()
     self:setPanel()
 end
 
+function App:importImageManifest()
+    --Import the Manifest.lua file from the Factories project
+    local file = StudioService:PromptImportFile()
+    if not file then
+        return nil
+    end
+
+    local newManifestInstance = Instance.new("ModuleScript")
+    newManifestInstance.Source = file:GetBinaryContents()
+    newManifestInstance.Name = "Factories Plugin Manifest"
+    newManifestInstance.Parent = ServerStorage
+
+    self:updateDataset(self.state.dataset)
+end
+
 function App:init()
     Studio.setSelectionTool()
 
@@ -116,6 +131,14 @@ function App:init()
         Scene.updateAllMapAssets(currentMap)
         self:setState({ datasetIsLoaded = true })
         self:updateDataset(templateDataset)
+    end
+
+    --Init the image manifest
+    local existingManifest = ServerStorage:FindFirstChild("Factories Plugin Manifest")
+    if existingManifest == nil then
+        existingManifest = script.Parent.Parent.Assets.Manifest:Clone()
+        existingManifest.Name = "Factories Plugin Manifest"
+        existingManifest.Parent = ServerStorage
     end
 
     local currentPanel = Panels.EditDatasetUI
@@ -213,6 +236,8 @@ function App:render()
                     Version = TextItem({
                         Text = "Version: " .. pluginVersion,
                         TextSize = 10,
+                        LayoutOrder = 1,
+                        OnActivate = function() end,
                     }),
                 }),
                 AddMachineButton = Block({
@@ -267,7 +292,7 @@ function App:render()
                             saveFile.Name = saveFile.Name
                             saveFile.Parent = datasetInstance.Parent
                             Selection:Set({ saveFile })
-                            local fileSaved = getfenv(0).plugin:PromptSaveSelection()
+                            local fileSaved = self.props.Plugin:PromptSaveSelection()
                             if fileSaved then
                                 print("File saved")
                             end

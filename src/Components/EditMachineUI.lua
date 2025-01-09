@@ -46,7 +46,7 @@ type Props = {
     OnClosePanel: any,
     OnAddInputMachine: (Types.Machine) -> nil,
     OnClickEditItem: (Types.Item) -> nil,
-    OnRequirementItemHovered: () -> nil,
+    OnRequirementItemHovered: (string) -> nil,
     UpdateDataset: any,
 }
 
