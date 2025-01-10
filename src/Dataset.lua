@@ -61,6 +61,54 @@ function Dataset:cleanMachines()
             machine.defaultProductionDelay = Constants.Defaults.MachineDefaultProductionDelay
         end
     end
+
+    --All machine sources should be used.
+    --We need to check each machine, and make sure that all of its sources have outputs that are used by this machine output.
+    --Otherwise, you'll get an error when you try to run it in factories.
+    for _, machine in machines do
+        --If there are no sources, then it's a producer, so skip it
+        local inputMachines = machine.sources
+        if inputMachines == nil then
+            continue
+        end
+
+        --Check each item. Make sure that each item requirement is also the output of one of the machine's input machines.
+        local outputItems = machine.outputs
+        if outputItems == nil then
+            debug.warn("Error! Machine", machine.id, "has no outputs!")
+            continue
+        end
+
+        if machine.outputs then
+            for _, itemId in machine.outputs do
+                local itemRequirements = items[itemId].requirements
+                if machine.sources then
+                    for _, inputMachineId in machine.sources do
+                        local inputMachine = Dataset:getMachineFsromId(inputMachineId)
+                        local inputMachineOutputs = inputMachine.outputs
+                        if not inputMachineOutputs then
+                            warn("Error! Machine", inputMachine.id, "has no outputs!")
+                            continue
+                        end
+                        --Do the outputs from the input machine match the output of this machine?
+                        local outputMatch = false
+                        for _, outputId in inputMachineOutputs do
+                            for _, requirementId in itemRequirements do
+                                if outputId == requirementId.itemId then
+                                    outputMatch = true
+                                end
+                            end
+                        end
+                        if outputMatch == false then
+                            warn(
+                                `{machine.id} ERROR! {inputMachine.id} is a source for {machine.id}, but none of its outputs are used! This will cause an error in Factories. Update the outputs in {machine.id} so that it uses an item from {inputMachine.id}.`
+                            )
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 function Dataset:cleanItems()
@@ -210,47 +258,6 @@ function Dataset:updateDataset(dataset, currentMapIndex)
     DatasetInstance.write(dataset)
 end
 
---TODO: Remove?
--- function Dataset:getMap(mapIndex: number)
---     return self.dataset["maps"][mapIndex]
--- end
-
--- function Dataset:changeItemId(itemKey, newName)
--- --check for naming collisions
--- newName = self:resolveDuplicateId(newName, self.items)
-
--- local items = self.items
--- local oldName = itemKey
--- local newItem = table.clone(items[itemKey])
-
--- newItem["id"] = newName
--- items[newName] = newItem
--- items[oldName] = nil
-
--- local machines = self.machines
--- for i, machine in machines do
---     if machine["outputs"] then
---         for j, output in machine["outputs"] do
---             if output == oldName then
---                 machines[i]["outputs"][j] = newName
---             end
---         end
---     end
--- end
-
--- --Loop through all items. Make sure if this new item is a requirement for another item, to change its id there too.
--- for _, item in self.items do
---     if item["requirements"] then
---         for _, req in item["requirements"] do
---             if req["itemId"] == oldName then
---                 req["itemId"] = newName
---             end
---         end
---     end
--- end
-
--- return newName
--- end
 function Dataset:getItemFromId(id)
     return self.items[id]
 end
@@ -336,28 +343,6 @@ function Dataset:updateItemId(itemToUpdate: Types.Item, newId: string)
             end
         end
     end
-
-    -- Dataset:changeItemId(itemToUpdate.id, id)
-    -- itemToUpdate.id = id
-    --if we're changing the ID, we must also change it wherever it appears as another machine's source
-    -- for i, machine in self.machines do
-    --     if machine["outputs"] then
-    --         for j, source in machine["outputs"] do
-    --             if source == originalId then
-    --                 self.machines[i]["outputs"][j] = id
-    --             end
-    --         end
-    --     end
-    -- end
-    -- for i, item in self.items do
-    --     if item.requirements then
-    --         for j, requirement in item.requirements do
-    --             if requirement.itemId == originalId then
-    --                 self.items[i]["requirements"][j] = id
-    --             end
-    --         end
-    --     end
-    -- end
     return true, newItem
 end
 

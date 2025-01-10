@@ -13,9 +13,9 @@ function DatasetInstance.read()
     return HttpService:JSONDecode(string.sub(str, #"return [[" + 1, #str - 2))
 end
 
-function DatasetInstance.write(dataset:table)
+function DatasetInstance.write(dataset: table)
     local datasetInstance = DatasetInstance.getDatasetInstance()
-    datasetInstance.Source = "return [["..HttpService:JSONEncode(dataset).."]]"
+    datasetInstance.Source = "return [[" .. HttpService:JSONEncode(dataset) .. "]]"
 end
 
 function DatasetInstance.replaceDatasetInstance(datasetInstance)
@@ -33,7 +33,7 @@ function DatasetInstance.getDatasetInstance()
     end
     return nil
 end
-                                                                                    
+
 function DatasetInstance.checkIfDatasetInstanceExists()
     local instance = DatasetInstance.getDatasetInstance()
     if instance then
@@ -47,7 +47,7 @@ function DatasetInstance.loadTemplateDataset()
     local template = require(script.Parent.Data["dataset_template"])
 
     local newDatasetInstance = Instance.new("ModuleScript")
-    newDatasetInstance.Source = "return [["..HttpService:JSONEncode(template).."]]"
+    newDatasetInstance.Source = "return [[" .. HttpService:JSONEncode(template) .. "]]"
     newDatasetInstance.Name = "dataset_template"
 
     DatasetInstance.replaceDatasetInstance(newDatasetInstance)
@@ -60,9 +60,9 @@ function DatasetInstance.instantiateNewDatasetInstance()
     if not file then
         return nil
     end
-    
+
     local newDatasetInstance = Instance.new("ModuleScript")
-    newDatasetInstance.Source = "return [["..file:GetBinaryContents().."]]"
+    newDatasetInstance.Source = "return [[" .. file:GetBinaryContents() .. "]]"
     newDatasetInstance.Name = file.Name:split(".")[1]
 
     DatasetInstance.replaceDatasetInstance(newDatasetInstance)
@@ -70,8 +70,8 @@ function DatasetInstance.instantiateNewDatasetInstance()
     return DatasetInstance.read(), newDatasetInstance
 end
 
-function DatasetInstance.updateDatasetInstanceName(name:string)
-    DatasetInstance.getDatasetInstance().Name = "dataset_"..name
+function DatasetInstance.updateDatasetInstanceName(name: string)
+    DatasetInstance.getDatasetInstance().Name = "dataset_" .. name
 end
 
 function DatasetInstance.getDatasetInstanceName()
