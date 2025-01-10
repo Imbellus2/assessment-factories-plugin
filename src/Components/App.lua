@@ -327,7 +327,7 @@ function App:render()
                                 .. "-Data"
                             tempMapDataInstance.Parent = game.Workspace
                             Selection:Set({ tempMapDataInstance })
-                            local fileSaved = getfenv(0).plugin:PromptSaveSelection()
+                            local fileSaved = self.props.Plugin:PromptSaveSelection()
                             if fileSaved then
                                 print("MapData File saved")
                             end
