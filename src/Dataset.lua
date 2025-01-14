@@ -84,7 +84,7 @@ function Dataset:cleanMachines()
                 local itemRequirements = items[itemId].requirements
                 if machine.sources then
                     for _, inputMachineId in machine.sources do
-                        local inputMachine = Dataset:getMachineFsromId(inputMachineId)
+                        local inputMachine = Dataset:getMachineFromId(inputMachineId)
                         local inputMachineOutputs = inputMachine.outputs
                         if not inputMachineOutputs then
                             warn("Error! Machine", inputMachine.id, "has no outputs!")
