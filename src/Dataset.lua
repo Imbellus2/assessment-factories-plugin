@@ -208,7 +208,7 @@ function Dataset:cleanItems()
                 item.requirements = nil
             else
                 item.requirements = {}
-                item.requirements[1] = { itemId = "currency", count = 0 }
+                item.requirements[1] = { itemId = "currency", count = 2 }
             end
         end
 
