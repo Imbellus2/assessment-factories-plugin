@@ -326,8 +326,8 @@ function Dataset:updateItemId(itemToUpdate: Types.Item, newId: string)
     -- if we're changing the ID, we must also change it wherever it appears as another machine's source
     for i, machine in self.machines do
         if machine["outputs"] then
-            for j, source in machine["outputs"] do
-                if source == originalId then
+            for j, machineOutput in machine["outputs"] do
+                if machineOutput == originalId then
                     self.machines[i]["outputs"][j] = newId
                 end
             end
@@ -338,7 +338,11 @@ function Dataset:updateItemId(itemToUpdate: Types.Item, newId: string)
         if item.requirements then
             for j, requirement in item.requirements do
                 if requirement.itemId == originalId then
-                    self.items[i]["requirements"][j] = newId
+                    local oldCount = requirement.count
+                    self.items[i]["requirements"][j] = {
+                        itemId = newId,
+                        count = oldCount,
+                    }
                 end
             end
         end

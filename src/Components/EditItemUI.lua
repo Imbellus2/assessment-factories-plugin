@@ -70,33 +70,9 @@ local function EditItemUI(props: Props)
         for _, requirement in item.requirements do
             if requirement.itemId == "currency" then
                 itemCost = requirement.count
-                -- setItemCost(itemCost)
             end
         end
     end
-
-    -- if not itemCost then
-    --     if item.requirements then
-    --         for _, requirement: Types.RequirementItem in item.requirements do
-    --             if requirement.itemId == "currency" then
-    --                 itemCost = requirement.count
-    --             end
-    --         end
-    --     else
-    --         item.requirements = {
-    --             {
-    --                 itemId = "currency",
-    --                 count = 0,
-    --             },
-    --         }
-    --     end
-    -- end
-    -- if not itemSalePrice then
-    --     if not item.value then
-    --         item.value = { itemId = "currency", count = 0 }
-    --     end
-    --     itemSalePrice = item.value.count
-    -- end
 
     local requirementItems = {}
 
