@@ -1,6 +1,5 @@
 local module = {}
-local PhysicsService = game:GetService("PhysicsService")
-local ProximityPromptService = game:GetService("ProximityPromptService")
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local getOrCreateFolder = require(script.Parent.Helpers.getOrCreateFolder)
 local folder = getOrCreateFolder("Temp_PathGenerator", ReplicatedStorage)
@@ -82,9 +81,6 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
     local centerPos = (p1 + p2) * 0.5
     local adjustedCenterPos = p1:Lerp(p2, midpointAdjustment)
     local midPos = Vector3.new(centerPos.X, p1.Y, adjustedCenterPos.Z)
-    -- local heightMidpoint: number = midPos.X
-    -- local lengthMidpoint: Vector3 = Vector3.new(midPos.X, p1.Y, (p1.Z + p2.Z) * midpoint)
-    -- midPos = lengthMidpoint
 
     local centerRadius = desiredRadius or height / 2
 
@@ -95,25 +91,21 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
         centerRadius = height / 2
     end
 
-    -- local partLength = length / 2 - centerRadius
 
     local bendingUp = p2.X - p1.X > 0 and 1 or -1
     local extraBendRot = bendingUp == 1 and tau / 2 or -tau / 4
 
     local part1Length = (length * midpointAdjustment) - centerRadius
-    -- local part1Length = ((length / 2) * midpointAdjustment) - centerRadius
     local bend1Height = centerRadius
     local vertPartLength = height - centerRadius * 2
     local bend2Height = centerRadius
     local part2Length = (length * (1 - midpointAdjustment)) - centerRadius
-    -- local part2Length = ((length / 2) * (1 - midpointAdjustment)) - centerRadius
 
     local components = {}
     local nodes = {}
     local conveyorDataFolder = getOrCreateFolder("BeltData", game.Workspace)
     local nodeFolder = getOrCreateFolder(conveyor.Name, conveyorDataFolder)
     nodeFolder:ClearAllChildren()
-    local name = conveyor.Name
 
     if part1Length > 0 then
         local part1 = partTemplate:Clone()
@@ -144,7 +136,8 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
         local magnitude = (startBend - endBend).Magnitude
 
         local density = math.floor(magnitude * nodeDensity)
-        for i = 0, density, 1 do
+        if density == 0 then density = 1 end
+        for i = 0, density -  1, 1 do
             local node = nodeTemplate:Clone()
             local xPos = startBend:Lerp(endBend, -math.cos((i / density) * math.pi / 2))
             local zPos = startBend:Lerp(endBend, math.sin((i / density) * math.pi / 2))
@@ -153,6 +146,7 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
             table.insert(nodes, node)
             node.Name = #nodes
         end
+        
     end
 
     if vertPartLength > 0 then
@@ -162,7 +156,7 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
         table.insert(components, vertPart)
 
         local density = math.floor(vertPartLength * nodeDensity)
-        for i = 1, density - 1, 1 do
+        for i = 0, density - 1, 1 do
             local node = nodeTemplate:Clone()
             node.CFrame = vertPart.CFrame:ToWorldSpace(
                 CFrame.new(
@@ -172,6 +166,7 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
             node.Parent = nodeFolder
             table.insert(nodes, node)
             node.Name = #nodes
+
         end
     end
 
@@ -189,14 +184,16 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
         local magnitude = (startBend - endBend).Magnitude
 
         local density = math.floor(magnitude * nodeDensity)
-        for i = 0, density, 1 do
-            local node = nodeTemplate:Clone()
-            local xPos = startBend:Lerp(endBend, math.sin((i / density) * math.pi / 2))
-            local zPos = startBend:Lerp(endBend, -math.cos((i / density) * math.pi / 2))
-            node.CFrame = CFrame.new(Vector3.new(xPos.X, p1.Y, zPos.Z + centerRadius))
-            node.Parent = nodeFolder
-            table.insert(nodes, node)
-            node.Name = #nodes
+        if density > 0 then
+            for i = 0, density - 1, 1 do
+                local node = nodeTemplate:Clone()
+                local xPos = startBend:Lerp(endBend, math.sin((i / density) * math.pi / 2))
+                local zPos = startBend:Lerp(endBend, -math.cos((i / density) * math.pi / 2))
+                node.CFrame = CFrame.new(Vector3.new(xPos.X, p1.Y, zPos.Z + centerRadius))
+                node.Parent = nodeFolder
+                table.insert(nodes, node)
+                node.Name = #nodes
+            end
         end
     end
 
@@ -209,7 +206,8 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
         local density = math.floor(part2Length * nodeDensity)
         for i = 0, density - 1, 1 do
             local node = nodeTemplate:Clone()
-            node.CFrame = CFrame.new(p2:Lerp(p2 - Vector3.new(0, 0, part2Length), i / density))
+            local startPoint = p2 - Vector3.new(0,0, part2Length)
+            node.CFrame = CFrame.new(startPoint:Lerp(p2, i / density))
             node.Parent = nodeFolder
             table.insert(nodes, node)
             node.Name = #nodes
