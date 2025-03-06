@@ -107,7 +107,13 @@ function generateBasicPath(p1: Vector3, p2: Vector3, midpointAdjustment, width, 
     local nodeFolder = getOrCreateFolder(conveyor.Name, conveyorDataFolder)
     nodeFolder:ClearAllChildren()
 
-    if part1Length > 0 then
+    if part1Length <= 0 then
+        local smallPart1Length = 0.01
+        local part1 = partTemplate:Clone()
+        part1.Size = Vector3.new(width, thickness, smallPart1Length)
+        part1.CFrame = CFrame.new(p1 + Vector3.new(0, 0, smallPart1Length * 0.5))
+        table.insert(components, part1)
+    elseif part1Length > 0 then
         local part1 = partTemplate:Clone()
         part1.Size = Vector3.new(width, thickness, part1Length)
         part1.CFrame = CFrame.new(p1 + Vector3.new(0, 0, part1Length * 0.5))
